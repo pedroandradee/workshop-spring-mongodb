@@ -21,24 +21,33 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    /*public User findById(String id) {
-        User user = userRepository.findOne(id);
-        if (user == null) {
-            throw new ObjectNotFoundException("Usuário não encontrado! id: " + id);
-        }
-        return user;
-    }*/
+    public User findById(String id) {
+        Optional<User> obj = userRepository.findById(id);
+        return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado!"));
+    }
 
     public User store(User obj) {
         return userRepository.insert(obj);
     }
 
+    public User update(User obj) {
+        User newObj = findById(obj.getId());
+        updateData(newObj, obj);
+        return userRepository.save(newObj);
+    }
+
+    private void updateData(User newObj, User obj) {
+        newObj.setName(obj.getName());
+        newObj.setEmail(obj.getEmail());
+    }
+
     public void delete(String id) {
-        //findById(id);
+        findById(id);
         userRepository.deleteById(id);
     }
 
     public User fromDTO(UserDTO objDto) {
         return new User(objDto.getId(), objDto.getName(), objDto.getEmail());
     }
+
 }

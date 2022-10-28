@@ -31,12 +31,12 @@ public class UserResource {
         return ResponseEntity.ok().body(listDTO);
     }
 
-    /*@RequestMapping(value="/{id}", method = RequestMethod.GET)
+    @RequestMapping(value="/{id}", method = RequestMethod.GET)
     public ResponseEntity<UserDTO> findById(@PathVariable String id) {
         User obj = userServices.findById(id);
 
         return ResponseEntity.ok().body(new UserDTO(obj));
-    }*/
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> store(@RequestBody UserDTO objDto) {
@@ -44,6 +44,14 @@ public class UserResource {
         obj = userServices.store(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
         return ResponseEntity.created(uri).build();
+    }
+
+    @RequestMapping(value="/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Void> update(@RequestBody UserDTO objDto, @PathVariable String id) {
+        User obj = userServices.fromDTO(objDto);
+        obj.setId(id);
+        obj = userServices.update(obj);
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
